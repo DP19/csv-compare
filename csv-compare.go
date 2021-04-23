@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gocarina/gocsv"
 	"os"
+	"strings"
 	"sync"
 )
 
@@ -47,15 +48,16 @@ func main() {
 	// setup multi threading so we can loop through this really fast
 	var wg sync.WaitGroup
 	wg.Add(len(csv2Entries))
+	fmt.Printf("Matches Found:\n")
 
 	for i := 0; i < len(csv2Entries); i++ {
 		go func(i int) {
 			defer wg.Done()
 			for _, entry := range csv2Entries {
-				// for each name in the first csv file, compare it to each of the names in the second.
+				// for each name in the first csv file, normalize them to lowercase and compare it to each of the names in the second.
 				// if there is a match we print to the output the full entry we found a match on
-				if csv1Entries[i].Name == entry.Name {
-					fmt.Printf("%s in both entries", entry.Name)
+				if strings.ToLower(csv1Entries[i].Name) == strings.ToLower(entry.Name) {
+					fmt.Printf("%s", entry.Name)
 				}
 			}
 		}(i)
